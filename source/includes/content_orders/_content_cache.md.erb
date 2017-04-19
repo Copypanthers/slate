@@ -1,0 +1,125 @@
+## Get Content Cache
+<%
+  wa_domain = config[:wa_domain] + '/api/project2s/:project_id/content_orders/:id/content_cache'
+  token = config[:sample_token]
+%>
+
+This endpoint retrieves content order's cached data.
+
+### HTTP Request
+
+`GET <%=wa_domain%>`
+
+### Query Parameters
+
+Parameter | Default | required | Description
+--------- | ------- | -------- | -----------
+id |  | true | Content Order Id to retrieve.
+project_id |  | true | Project Id to retrieve content orders.
+update_cache | false | false | If this field is set to true then the content cache is refreshed.
+
+```shell
+curl -X GET \
+  <%=wa_domain%> \
+  -H 'accept: application/vnd.wordapp-v1+json' \
+  -H 'authorization: Bearer <%=token%>' \
+  -H 'cache-control: no-cache' \
+  -H 'content-type: application/json' \
+```
+
+```php
+<?php
+
+$curl = curl_init();
+
+curl_setopt_array($curl, array(
+  CURLOPT_URL => "<%=wa_domain%>",
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_ENCODING => "",
+  CURLOPT_MAXREDIRS => 10,
+  CURLOPT_TIMEOUT => 30,
+  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_CUSTOMREQUEST => "GET",
+  CURLOPT_HTTPHEADER => array(
+    "accept: application/vnd.wordapp-v1+json",
+    "authorization: Bearer <%=token%>",
+    "cache-control: no-cache",
+    "content-type: application/json",
+  ),
+));
+
+$response = curl_exec($curl);
+$err = curl_error($curl);
+
+curl_close($curl);
+
+if ($err) {
+  echo "cURL Error #:" . $err;
+} else {
+  echo $response;
+}
+```
+
+```ruby
+require 'uri'
+require 'net/http'
+
+url = URI("<%=wa_domain%>")
+
+http = Net::HTTP.new(url.host, url.port)
+
+request = Net::HTTP::Get.new(url)
+request["authorization"] = 'Bearer <%=token%>'
+request["content-type"] = 'application/json'
+request["accept"] = 'application/vnd.wordapp-v1+json'
+request["cache-control"] = 'no-cache'
+
+response = http.request(request)
+puts response.read_body
+```
+
+```python
+import requests
+
+url = "<%=wa_domain%>"
+
+headers = {
+    'authorization': "Bearer <%=token%>",
+    'content-type': "application/json",
+    'accept': "application/vnd.wordapp-v1+json",
+    'cache-control': "no-cache",
+    }
+
+response = requests.request("GET", url, headers=headers)
+
+print(response.text)
+```
+
+> The above commands returns the JSON structure like this: 
+
+```json
+{
+  "status": 200,
+  "errors": [],
+  "data": {
+    "content_cache": {
+      "content_parts": [
+        {
+          "type": "h1",
+          "text": "Lorem ipsum",
+          "url": null,
+          "image_url": null
+        },
+        {
+          "type": "text",
+          "text": "Lorem ipsum.",
+          "url": null,
+          "image_url": null
+        }
+      ],
+      "html_content": "    <h1>Lorem ipsum</h1>\n    <p>Lorem ipsum.</p>\n",
+      "domain": {}
+    }
+  }
+}
+```

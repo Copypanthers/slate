@@ -1,0 +1,102 @@
+## Upload Content Orders
+<%
+  wa_domain = config[:wa_domain] + '/api/project2s/:id/upload_content_orders'
+  token = config[:sample_token]
+%>
+
+This endpoint uploads content orders to the project.
+
+### HTTP Request
+
+`POST <%=wa_domain%>`
+
+### Query Parameters
+
+Parameter | Default | required | Description
+--------- | ------- | -------- | -----------
+id |  | true | Project Id to retrieve.
+
+Via clicking <a href='https://crowdpanthers.atlassian.net/wiki/display/HLD/WordApp+Task+Upload+Delimited+File+Format+Version+3.00.02'>here</a> you would find reference of tsv file to upload.
+
+```shell
+curl -X POST \
+  <%=wa_domain%> \
+  -H 'accept: application/vnd.wordapp-v1+json' \
+  -H 'authorization: Bearer <%=token%>' \
+  -H 'cache-control: no-cache' \
+  -H 'content-type: application/json' \
+  -F 'file=@sample.tsv'
+```
+
+```php
+<?php
+
+$curl = curl_init();
+
+curl_setopt_array($curl, array(
+  CURLOPT_URL => "<%=wa_domain%>",
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_ENCODING => "",
+  CURLOPT_MAXREDIRS => 10,
+  CURLOPT_TIMEOUT => 30,
+  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_CUSTOMREQUEST => "POST",
+  CURLOPT_POSTFIELDS => "Content-Disposition: form-data; name=\"file\"; filename=\"sample.tsv\"\r\nContent-Type: image/jpeg\r\n",
+  CURLOPT_HTTPHEADER => array(
+    "accept: application/vnd.wordapp-v1+json",
+    "authorization: Bearer <%=token%>",
+    "cache-control: no-cache",
+    "content-type: application/json",
+  ),
+));
+
+$response = curl_exec($curl);
+$err = curl_error($curl);
+
+curl_close($curl);
+
+if ($err) {
+  echo "cURL Error #:" . $err;
+} else {
+  echo $response;
+}
+```
+
+```ruby
+require 'uri'
+require 'net/http'
+
+url = URI("<%=wa_domain%>")
+
+http = Net::HTTP.new(url.host, url.port)
+
+request = Net::HTTP::Delete.new(url)
+request["authorization"] = 'Bearer <%=token%>'
+request["content-type"] = 'application/json'
+request["accept"] = 'application/vnd.wordapp-v1+json'
+request["cache-control"] = 'no-cache'
+request.body = "Content-Disposition: form-data; name=\"file\"; filename=\"sample.tsv\"\r\nContent-Type: image/jpeg\r\n"
+response = http.request(request)
+puts response.read_body
+```
+
+```python
+import requests
+
+url = "<%=wa_domain%>"
+
+headers = {
+    'authorization': "Bearer <%=token%>",
+    'content-type': "application/json",
+    'accept': "application/vnd.wordapp-v1+json",
+    'cache-control': "no-cache",
+    }
+
+payload = "Content-Disposition: form-data; name=\"file\"; filename=\"sample.tsv\"\r\nContent-Type: image/jpeg\r\n"
+
+response = requests.request("DELETE", url, headers=headers,payload=payload)
+
+print(response.text)
+```
+
+> The above commands does not return any output. If the proccess is ok then the server return 204 status code. 

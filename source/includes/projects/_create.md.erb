@@ -1,0 +1,184 @@
+## Create
+
+This endpoint creates new project
+
+<%
+  wa_domain = config[:wa_domain] + '/api/project2s/'
+  token = config[:sample_token]
+  domain_id = BSON::ObjectId.new.to_s
+  account_id = BSON::ObjectId.new.to_s
+  template_id = BSON::ObjectId.new.to_s
+%>
+
+### HTTP Request
+
+`POST <%=wa_domain%>`
+
+
+### Query Parameters
+
+Parameter | Default | required | Description
+--------- | ------- | -------- | -----------
+fields | all | false | If set to all, the result will include all fields. Otwerwise fields should be comma seperated.
+
+
+### POST Parameters
+
+Parameter | Default | required | Description
+--------- | ------- | -------- | -----------
+project[name] | Untitled Project | true | Project Name.
+project[public] | false | false | If it is set true the project is opened for everybody.
+project[max_in_progress] | 10 | false | 
+project[plagiarism_percentage] | | false | 
+project[rule_check_for] | | false | 
+project[default_template_id] | | true | 
+project[account_id] | | true | 
+
+
+```shell
+curl -X POST \
+  <%=wa_domain%> \
+  -H 'accept: application/vnd.wordapp-v1+json' \
+  -H 'authorization: Bearer <%=token%>' \
+  -H 'cache-control: no-cache' \
+  -H 'content-type: application/json' \
+  -d '{
+"project":{
+  "name":"Test Project",
+  "public":false,
+  "max_in_progress":10,
+  "plagiarism_percentage":10,
+  "rule_check_for":{
+    "client":true,
+    "editor":true,
+    "manager":true,
+    "writer":true
+    
+  },
+  "default_template_id":"<%=template_id%>",
+  "account_id":"<%=account_id%>"
+}}'
+```
+
+```php
+<?php
+
+$curl = curl_init();
+
+curl_setopt_array($curl, array(
+  CURLOPT_URL => "<%=wa_domain%>",
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_ENCODING => "",
+  CURLOPT_MAXREDIRS => 10,
+  CURLOPT_TIMEOUT => 30,
+  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_CUSTOMREQUEST => "POST",
+  CURLOPT_POSTFIELDS => "{\n\"project\":{\n\t\"name\":\"Test Project\",\n\t\"public\":false,\n\t\"max_in_progress\":10,\n\t\"plagiarism_percentage\":10,\n\t\"rule_check_for\":{\n\t\t\"client\":true,\n\t\t\"editor\":true,\n\t\t\"manager\":true,\n\t\t\"writer\":true\n\t\t\n\t},\n\t\"default_template_id\":\"<%=template_id%>\",\n\t\"account_id\":\"<%=account_id%>\"\n}}",
+  CURLOPT_HTTPHEADER => array(
+    "accept: application/vnd.wordapp-v1+json",
+    "authorization: Bearer <%=token%>",
+    "cache-control: no-cache",
+    "content-type: application/json",
+  ),
+));
+
+$response = curl_exec($curl);
+$err = curl_error($curl);
+
+curl_close($curl);
+
+if ($err) {
+  echo "cURL Error #:" . $err;
+} else {
+  echo $response;
+}
+```
+
+```ruby
+require 'uri'
+require 'net/http'
+
+url = URI("<%=wa_domain%>")
+
+http = Net::HTTP.new(url.host, url.port)
+
+request = Net::HTTP::Post.new(url)
+request["authorization"] = 'Bearer <%=token%>'
+request["content-type"] = 'application/json'
+request["accept"] = 'application/vnd.wordapp-v1+json'
+request["cache-control"] = 'no-cache'
+request.body = "{\n\"project\":{\n\t\"name\":\"Test Project\",\n\t\"public\":false,\n\t\"max_in_progress\":10,\n\t\"plagiarism_percentage\":10,\n\t\"rule_check_for\":{\n\t\t\"client\":true,\n\t\t\"editor\":true,\n\t\t\"manager\":true,\n\t\t\"writer\":true\n\t\t\n\t},\n\t\"default_template_id\":\"<%=template_id%>\",\n\t\"account_id\":\"<%=account_id%>\"\n}}"
+
+response = http.request(request)
+puts response.read_body
+```
+
+```python
+import requests
+
+url = "<%=wa_domain%>"
+
+payload = "{\n\"project\":{\n\t\"name\":\"Test Project\",\n\t\"public\":false,\n\t\"max_in_progress\":10,\n\t\"plagiarism_percentage\":10,\n\t\"rule_check_for\":{\n\t\t\"client\":true,\n\t\t\"editor\":true,\n\t\t\"manager\":true,\n\t\t\"writer\":true\n\t\t\n\t},\n\t\"default_template_id\":\"<%=template_id%>\",\n\t\"account_id\":\"<%=account_id%>\"\n}}"
+headers = {
+    'authorization': "Bearer <%=token%>",
+    'content-type': "application/json",
+    'accept': "application/vnd.wordapp-v1+json",
+    'cache-control': "no-cache",
+    }
+
+response = requests.request("POST", url, data=payload, headers=headers)
+
+print(response.text)
+```
+
+> The above commands returns the JSON structure like this: 
+
+```json
+{
+  "status": 200,
+  "errors": [],
+  "data": {
+    "status": "running",
+    "name": "Test Project",
+    "created_at": "2017-03-07T13:14:58.743Z",
+    "updated_at": "2017-03-07T13:16:37.628Z",
+    "public": false,
+    "max_in_progress": 10,
+    "plagiarism_percentage": 10,
+    "rule_check_for": {
+      "writer": true,
+      "editor": true,
+      "client": true,
+      "manager": true
+    },
+    "owner": {
+      "first_name": "John",
+      "id": "<%=BSON::ObjectId.new.to_s%>"
+    },
+    "account": {
+      "name": "Adtraction Visits AB",
+      "id": "<%=account_id%>"
+    },
+    "default_template": {
+      "name": "Template",
+      "id": "<%=template_id%>"
+    },
+    "id": "<%=BSON::ObjectId.new.to_s%>",
+    "my_roles": [
+      "editor",
+      "writer",
+      "client",
+      "owner"
+    ],
+    "status_counts": {
+      "can_start": 2,
+      "approved": 1
+    },
+    "last_activity": {
+      "id": "<%=BSON::ObjectId.new.to_s%>",
+      "end_time": "2017-04-17T11:49:45.719Z",
+      "task_type": "ManagerTask"
+    }
+  }
+}
+```

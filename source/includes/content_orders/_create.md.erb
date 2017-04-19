@@ -1,0 +1,176 @@
+## Create Content Order
+<%
+  wa_domain = config[:wa_domain] + '/api/project2s/:project_id/content_orders'
+  token = config[:sample_token]
+  domain_id = BSON::ObjectId.new.to_s
+  template_id = BSON::ObjectId.new.to_s
+%>
+
+This endpoint creates a fresh Content Order.
+
+### HTTP Request
+
+`POST <%=wa_domain%>`
+
+### Query Parameters
+
+Parameter | Default | required | Description
+--------- | ------- | -------- | -----------
+project_id |  | true | Project Id to retrieve content orders.
+fields | all | false | If set to all, the result will include all fields. Otwerwise fields should be comma seperated.
+
+### POST Parameters
+
+Parameter | Default | required | Description
+--------- | ------- | -------- | -----------
+content_order[template_id] | | false | This is for template. If it is left blank then project's template will be used.
+content_order[domain_id] | | false | Domain ID
+content_order[language] | | false | Content Order's language
+content_order[keywords] | | true | 
+content_order[keyword_substitutes] | | false | 
+content_order[source_url] | | false | 
+content_order[target_url] | | false | 
+content_order[external_id] | | false | 
+
+```shell
+curl -X POST \
+  <%=wa_domain%> \
+  -H 'accept: application/vnd.wordapp-v1+json' \
+  -H 'authorization: Bearer <%=token%>' \
+  -H 'cache-control: no-cache' \
+  -H 'content-type: application/json' \
+  -d '{
+  "content_order":{
+  "id":null,
+  "target_url":"http://test-target.com",
+  "source_url":"http://example.com",
+  "external_id":"",
+  "keywords":["Test","sub keyword 1","sub keyword 2"],
+  "keyword_substitutes":["substitute1","substitute2",""],
+  "domain_id":"<%=domain_id%>",
+  "template_id":"<%=template_id%>"
+  
+  }
+}'
+```
+
+```php
+<?php
+
+$curl = curl_init();
+
+curl_setopt_array($curl, array(
+  CURLOPT_URL => "<%=wa_domain%>",
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_ENCODING => "",
+  CURLOPT_MAXREDIRS => 10,
+  CURLOPT_TIMEOUT => 30,
+  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_CUSTOMREQUEST => "POST",
+  CURLOPT_POSTFIELDS => "{\n\t\"content_order\":{\n\t\"id\":null,\n\t\"target_url\":\"http://test-target.com\",\n\t\"source_url\":\"http://example.com\",\n\t\"external_id\":\"\",\n\t\"keywords\":[\"Test\",\"sub keyword 1\",\"sub keyword 2\"],\n\t\"keyword_substitutes\":[\"substitute1\",\"substitute2\",\"\"],\n\t\"domain_id\":\"<%=domain_id%>\",\n\t\"template_id\":\"<%=template_id%>\"\n\t\n\t}\n}",
+  CURLOPT_HTTPHEADER => array(
+    "accept: application/vnd.wordapp-v1+json",
+    "authorization: Bearer <%=token%>",
+    "cache-control: no-cache",
+    "content-type: application/json",
+  ),
+));
+
+$response = curl_exec($curl);
+$err = curl_error($curl);
+
+curl_close($curl);
+
+if ($err) {
+  echo "cURL Error #:" . $err;
+} else {
+  echo $response;
+}
+```
+
+```ruby
+require 'uri'
+require 'net/http'
+
+url = URI("<%=wa_domain%>")
+
+http = Net::HTTP.new(url.host, url.port)
+
+request = Net::HTTP::Post.new(url)
+request["authorization"] = 'Bearer <%=token%>'
+request["content-type"] = 'application/json'
+request["accept"] = 'application/vnd.wordapp-v1+json'
+request["cache-control"] = 'no-cache'
+request.body = "{\n\t\"content_order\":{\n\t\"id\":null,\n\t\"target_url\":\"http://test-target.com\",\n\t\"source_url\":\"http://example.com\",\n\t\"external_id\":\"\",\n\t\"keywords\":[\"Test\",\"sub keyword 1\",\"sub keyword 2\"],\n\t\"keyword_substitutes\":[\"substitute1\",\"substitute2\",\"\"],\n\t\"domain_id\":\"<%=domain_id%>\",\n\t\"template_id\":\"<%=template_id%>\"\n\t\n\t}\n}"
+
+response = http.request(request)
+puts response.read_body
+```
+
+```python
+import requests
+
+url = "<%=wa_domain%>"
+
+payload = "{\n\t\"content_order\":{\n\t\"id\":null,\n\t\"target_url\":\"http://test-target.com\",\n\t\"source_url\":\"http://example.com\",\n\t\"external_id\":\"\",\n\t\"keywords\":[\"Test\",\"sub keyword 1\",\"sub keyword 2\"],\n\t\"keyword_substitutes\":[\"substitute1\",\"substitute2\",\"\"],\n\t\"domain_id\":\"<%=domain_id%>\",\n\t\"template_id\":\"<%=template_id%>\"\n\t\n\t}\n}"
+headers = {
+    'authorization': "Bearer <%=token%>",
+    'content-type': "application/json",
+    'accept': "application/vnd.wordapp-v1+json",
+    'cache-control': "no-cache"
+    }
+
+response = requests.request("POST", url, data=payload, headers=headers)
+
+print(response.text)
+```
+
+> The above commands returns the JSON structure like this: 
+
+```json
+{
+  "status": 201,
+  "errors": [],
+  "data": {
+    "state": "can_start",
+    "created_at": "2017-04-17T11:30:55.372Z",
+    "updated_at": "2017-04-17T11:30:55.372Z",
+    "language": "sv",
+    "keywords": [
+      "Test",
+      "sub keyword 1",
+      "sub keyword 2"
+    ],
+    "keyword_substitutes": [
+      "substitute1",
+      "substitute2",
+      ""
+    ],
+    "source_url": "http://example.com",
+    "target_url": "http://test-target.com",
+    "external_id": "",
+    "pending_task": {
+      "state": "pending",
+      "id": "<%=BSON::ObjectId.new.to_s%>",
+      "actor": {
+        "first_name": "Mehmet",
+        "id": "<%=BSON::ObjectId.new.to_s%>"
+      },
+      "type": "ManagerTask"
+    },
+    "template": {
+      "name": "Test lista",
+      "id": "<%=domain_id%>"
+    },
+    "domain": {
+      "url": "lenisaris.nl",
+      "id": "<%=domain_id%>"
+    },
+    "project": {
+      "name": "Zapier Project",
+      "id": "<%=BSON::ObjectId.new.to_s%>"
+    },
+    "id": "<%=BSON::ObjectId.new.to_s%>"
+  }
+}
+```

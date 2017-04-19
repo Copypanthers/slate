@@ -1,0 +1,160 @@
+## Export
+<%
+  wa_domain = config[:wa_domain] + '/api/project2s/:id/export'
+  token = config[:sample_token]
+%>
+
+This endpoint exports project's content orders in given format such as xml,csv or txt.
+
+### XML Download
+`GET <%=wa_domain%>.xml`
+
+### TSV Download
+`GET <%=wa_domain%>.tsv`
+
+### TXT Download
+`GET <%=wa_domain%>.txt`
+
+### Query Parameters
+
+Parameter | Default | required | Description
+--------- | ------- | -------- | -----------
+id |  | true | Project Id to retrieve.
+
+
+```shell
+curl -X GET \
+  <%=wa_domain%> \
+  -H 'accept: application/vnd.wordapp-v1+json' \
+  -H 'authorization: Bearer <%=token%>' \
+  -H 'cache-control: no-cache' \
+  -H 'content-type: application/json' \
+```
+
+```php
+<?php
+
+$curl = curl_init();
+
+curl_setopt_array($curl, array(
+  CURLOPT_URL => "<%=wa_domain%>",
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_ENCODING => "",
+  CURLOPT_MAXREDIRS => 10,
+  CURLOPT_TIMEOUT => 30,
+  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_CUSTOMREQUEST => "GET",
+  CURLOPT_HTTPHEADER => array(
+    "accept: application/vnd.wordapp-v1+json",
+    "authorization: Bearer <%=token%>",
+    "cache-control: no-cache",
+    "content-type: application/json",
+  ),
+));
+
+$response = curl_exec($curl);
+$err = curl_error($curl);
+
+curl_close($curl);
+
+if ($err) {
+  echo "cURL Error #:" . $err;
+} else {
+  echo $response;
+}
+```
+
+```ruby
+require 'uri'
+require 'net/http'
+
+url = URI("<%=wa_domain%>")
+
+http = Net::HTTP.new(url.host, url.port)
+
+request = Net::HTTP::Get.new(url)
+request["authorization"] = 'Bearer <%=token%>'
+request["content-type"] = 'application/json'
+request["accept"] = 'application/vnd.wordapp-v1+json'
+request["cache-control"] = 'no-cache'
+
+response = http.request(request)
+puts response.read_body
+```
+
+```python
+import requests
+
+url = "<%=wa_domain%>"
+
+headers = {
+    'authorization': "Bearer <%=token%>",
+    'content-type': "application/json",
+    'accept': "application/vnd.wordapp-v1+json",
+    'cache-control': "no-cache",
+    }
+
+response = requests.request("GET", url, headers=headers)
+
+print(response.text)
+```
+
+> The above commands returns the XML structure like this: 
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project id="<%=BSON::ObjectId.new.to_s%>">
+    <content_order>
+        <id><%=BSON::ObjectId.new.to_s%></id>
+        <template_id><%=BSON::ObjectId.new.to_s%></template_id>
+        <language>en</language>
+        <keywords>
+            <keyword>chess</keyword>
+        </keywords>
+        <content_parts>
+            <content_part>
+                <text>Lorem ipsum</text>
+                <type>h1</type>
+            </content_part>
+            <content_part>
+                <text>Lorem ipsum2.</text>
+                <type>text</type>
+            </content_part>
+        </content_parts>
+        <html_content>
+            <![CDATA[   <h1>Lorem ipsum</h1><p>Lorem ipsum2.</p>
+]]>
+        </html_content>
+    </content_order>
+</project>
+```
+
+> This is the TSV format:
+
+```tsv
+Content Id  Language  Template Id Keyword Sub Keywords  External Id Approval Score  Domain Url  Source Url  Target Url  HTML Content  part_1_type part_1_text part_1_url  part_1_image  part_2_type part_2_text part_2_url  part_2_image
+<%=BSON::ObjectId.new.to_s%>  en  <%=BSON::ObjectId.new.to_s%>  chess ""  ""  Approved        "    <h1>Lorem Ipsum</h1>
+    <p>Lorem Ipsum2</p>
+" h1  Lorem Ipsum     text  Lorem Ipsum2.    
+```
+
+> This is the TXT format:
+
+```txt
+Project ID: <%=BSON::ObjectId.new.to_s%>
+Id: <%=BSON::ObjectId.new.to_s%>
+Template Id: <%=BSON::ObjectId.new.to_s%>
+Language: en
+Main Keyword: chess
+Content Parts:
+  Type: h1
+  Text: Lorem Ipsum
+
+  Type: text
+  Text: Lorem Ipsum2
+
+Html Content:
+    <h1>Lorem Ipsum</h1>
+    <p>Lorem Ipsum2.</p>
+
+```

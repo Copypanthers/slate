@@ -1,0 +1,158 @@
+## Show Content Order for editor
+<%
+  wa_domain = config[:wa_domain] + '/api/project2s/:project_id/content_orders/:id/for_editor'
+  token = config[:sample_token]
+%>
+
+This endpoint retrieves content order's detail for editor. This route is slightly different than <a href='#show-content-order'> this </a>in terms of payload.
+
+### HTTP Request
+
+`GET <%=wa_domain%>`
+
+### Query Parameters
+
+Parameter | Default | required | Description
+--------- | ------- | -------- | -----------
+id |  | true | Content Order Id to retrieve.
+project_id |  | true | Project Id to retrieve content orders.
+
+
+```shell
+curl -X GET \
+  <%=wa_domain%> \
+  -H 'accept: application/vnd.wordapp-v1+json' \
+  -H 'authorization: Bearer <%=token%>' \
+  -H 'cache-control: no-cache' \
+  -H 'content-type: application/json' \
+```
+
+```php
+<?php
+
+$curl = curl_init();
+
+curl_setopt_array($curl, array(
+  CURLOPT_URL => "<%=wa_domain%>",
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_ENCODING => "",
+  CURLOPT_MAXREDIRS => 10,
+  CURLOPT_TIMEOUT => 30,
+  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_CUSTOMREQUEST => "GET",
+  CURLOPT_HTTPHEADER => array(
+    "accept: application/vnd.wordapp-v1+json",
+    "authorization: Bearer <%=token%>",
+    "cache-control: no-cache",
+    "content-type: application/json",
+  ),
+));
+
+$response = curl_exec($curl);
+$err = curl_error($curl);
+
+curl_close($curl);
+
+if ($err) {
+  echo "cURL Error #:" . $err;
+} else {
+  echo $response;
+}
+```
+
+```ruby
+require 'uri'
+require 'net/http'
+
+url = URI("<%=wa_domain%>")
+
+http = Net::HTTP.new(url.host, url.port)
+
+request = Net::HTTP::Get.new(url)
+request["authorization"] = 'Bearer <%=token%>'
+request["content-type"] = 'application/json'
+request["accept"] = 'application/vnd.wordapp-v1+json'
+request["cache-control"] = 'no-cache'
+
+response = http.request(request)
+puts response.read_body
+```
+
+```python
+import requests
+
+url = "<%=wa_domain%>"
+
+headers = {
+    'authorization': "Bearer <%=token%>",
+    'content-type': "application/json",
+    'accept': "application/vnd.wordapp-v1+json",
+    'cache-control': "no-cache",
+    }
+
+response = requests.request("GET", url, headers=headers)
+
+print(response.text)
+```
+
+> The above commands returns the JSON structure like this: 
+
+```json
+{
+  "status": 200,
+  "errors": [],
+  "data": {
+    "id": "<%=BSON::ObjectId.new.to_s%>",
+    "state": "approved",
+    "external_id": "",
+    "workflow_message": null,
+    "workflow_checklist": null,
+    "keywords": [
+      "chess"
+    ],
+    "available_options": {
+      "drop": null,
+      "workflow": null
+    },
+    "source_url": null,
+    "target_url": null,
+    "project": {
+      "id": "<%=BSON::ObjectId.new.to_s%>",
+      "name": "Zapier Project"
+    },
+    "pending_task": {
+      "id": "<%=BSON::ObjectId.new.to_s%>",
+      "type": "ManagerTask"
+    },
+    "content_parts": [
+      {
+        "id": "<%=BSON::ObjectId.new.to_s%>",
+        "item_type": "h1",
+        "item_type_translation": "H1",
+        "sequence": "0",
+        "image_file_url": null,
+        "instruction": "",
+        "text": "Bu bir denemedir",
+        "rules": []
+      },
+      {
+        "id": "<%=BSON::ObjectId.new.to_s%>",
+        "item_type": "text",
+        "item_type_translation": "TEXT",
+        "sequence": "1",
+        "image_file_url": null,
+        "instruction": "",
+        "text": "Bu bir deneme yazısıdır.",
+        "rules": []
+      }
+    ],
+    "template": {
+      "id": "<%=BSON::ObjectId.new.to_s%>",
+      "professions": [],
+      "instructions": null,
+      "difficulty_level": 1
+    },
+    "domain": null
+  }
+}
+```
