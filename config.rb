@@ -15,6 +15,10 @@ set :js_dir, 'javascripts'
 set :images_dir, 'images'
 set :fonts_dir, 'fonts'
 
+# App vars
+set :wa_domain, 'https://app.wordapp.io'
+set :sample_token, 'bf367b4f20453a59f6e44d5a286ad5af6f3f0c6d2d62e63e45a34012398ff8c3'
+
 # Activate the syntax highlighter
 activate :syntax
 ready do
@@ -22,6 +26,16 @@ ready do
 end
 
 activate :sprockets
+
+activate :deploy do |deploy|
+  deploy.deploy_method   = :sftp
+  deploy.host            = 'app.wordapp.io'
+  deploy.port            = 22
+  deploy.path            = '/home/ubuntu/www/docs'
+  # Optional Settings
+   deploy.user     = 'ubuntu' # no default
+  # deploy.password = 'secret' # no default
+end
 
 activate :autoprefixer do |config|
   config.browsers = ['last 2 version', 'Firefox ESR']
